@@ -1,7 +1,7 @@
-from mavlink.mavlink import MAVLinkController, DataAcquisitionThread
-from mavlink.mavlink.processor import GimbalProcessor, GlobalPositionProcessor, AttitudeProcessor
-from data_stream import StreamReceiver
-from drone_data import DroneData
+from .mavlink.mavlink import MAVLinkController, DataAcquisitionThread
+from .mavlink.mavlink.processor import GimbalProcessor, GlobalPositionProcessor, AttitudeProcessor
+from .data_stream import StreamReceiver
+from .drone_data import DroneData
 
 
 class DroneDataService:
