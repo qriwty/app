@@ -4,3 +4,6 @@
 [submodule "services/control/communication/mavlink"]
 	path = services/control/communication/mavlink
 	url = https://github.com/qriwty/mavlink
+[submodule "services/control/idcs"]
+	path = services/control/idcs
+	url = https://github.com/qriwty/idcs
