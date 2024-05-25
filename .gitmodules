@@ -1,0 +1,6 @@
+[submodule "services/control/analysis/deep_sort"]
+	path = services/control/analysis/deep_sort
+	url = https://github.com/qriwty/deep_sort
+[submodule "services/control/communication/mavlink"]
+	path = services/control/communication/mavlink
+	url = https://github.com/qriwty/mavlink
