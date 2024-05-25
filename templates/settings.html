@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Налаштування моделі</h1>
+    <form method="POST" action="{{ url_for('settings_bp.update') }}">
+        <div>
+            <label for="confidence">Впевненість:</label>
+            <input type="text" id="confidence" name="confidence" value="{{ settings.confidence }}" required>
+        </div>
+        <div>
+            <label for="exclude_classes">Виключити класи:</label>
+            <input type="text" id="exclude_classes" name="exclude_classes" value="{{ settings.exclude_classes }}" required>
+        </div>
+        <div>
+            <label for="detection_limit">Ліміт детекцій:</label>
+            <input type="text" id="detection_limit" name="detection_limit" value="{{ settings.detection_limit }}" required>
+        </div>
+        <div>
+            <label for="jaccard_index">Коефіцієнт Жаккара:</label>
+            <input type="text" id="jaccard_index" name="jaccard_index" value="{{ settings.jaccard_index }}" required>
+        </div>
+        <button type="submit">Зберигти зміни</button>
+    </form>
+</body>
+</html>

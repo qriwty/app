@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script>
+        function fetchImage() {
+            fetch('/dashboard/image')
+                .then(response => {
+                    if (response.status === 401) {
+                        window.location.href = '/auth/login';
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.image_data) {
+                        document.getElementById('numpy-image').src = 'data:image/png;base64,' + data.image_data;
+                    }
+                })
+                .catch(error => console.error('Error fetching image:', error));
+        }
+
+        setInterval(fetchImage, 1000 / 2);
+
+        window.onload = fetchImage;
+    </script>
+    <script>
+        function startNewFlight() {
+            fetch('/dashboard/start-flight', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('flight-info').innerText = 'Current Flight ID: ' + data.flight_id;
+            })
+            .catch(error => console.error('Error starting new flight:', error));
+        }
+        function stopCurrentFlight() {
+            fetch('/dashboard/stop-flight', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    document.getElementById('flight-info').innerText = data.message;
+                }
+            })
+            .catch(error => console.error('Error stopping flight:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+    <p>This is a protected page, accessible only by authorized users.</p>
+    <img id="numpy-image" src="" alt="NumPy Image">
+    <button onclick="startNewFlight()">Start New Flight</button>
+    <button onclick="stopCurrentFlight()">Stop Current Flight</button>
+    <div id="flight-info"></div>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('profile_bp.profile') }}">Profile</a></li>
+            <li><a href="{{ url_for('navigation_bp.navigation') }}">Navigation</a></li>
+            <li><a href="{{ url_for('settings_bp.settings') }}">Settings</a></li>
+        </ul>
+    </nav>
+</body>
+</html>
