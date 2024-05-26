@@ -7,6 +7,16 @@ from config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 
+from services.control import core
+
+core_service = core.DroneCoreService(
+    mavlink_address="udp:0.0.0.0:14550",
+    stream_host="192.168.0.107",
+    stream_port=5588,
+    model_path="services/control/analysis/yolov8n-visdrone.pt",
+    dem_path="services/control/analysis/S36E149.hgt"
+)
+
 
 def create_app():
     app = Flask(__name__)

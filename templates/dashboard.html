@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script>
-        function fetchImage() {
-            fetch('/dashboard/image')
+        function fetchData() {
+            fetch('/dashboard/get-analysis')
                 .then(response => {
                     if (response.status === 401) {
                         window.location.href = '/auth/login';
@@ -16,15 +16,29 @@
                 })
                 .then(data => {
                     if (data && data.image_data) {
-                        document.getElementById('numpy-image').src = 'data:image/png;base64,' + data.image_data;
+                        document.getElementById('image').src = 'data:image/png;base64,' + data.image_data;
                     }
+                    if (data && data.detections) {
+                        const resultsDiv = document.getElementById('results');
+                        resultsDiv.innerHTML = '';
+                        data.detections.forEach(detection => {
+                            const detectionDiv = document.createElement('div');
+                            detectionDiv.innerHTML = `
+                                <p>Track ID: ${detection.track_id}</p>
+                                <p>Class ID: ${detection.class_id}</p>
+                                <p>Location: Latitude: ${detection.location[0]}, Longitude: ${detection.location[1]}, Altitude: ${detection.location[2]}</p>
+                            `;
+                            resultsDiv.appendChild(detectionDiv);
+                        });
+                    }
+
                 })
-                .catch(error => console.error('Error fetching image:', error));
+                .catch(error => console.error('Error fetching data:', error));
         }
 
-        setInterval(fetchImage, 1000 / 2);
+        setInterval(fetchData, 1000 / 3);
 
-        window.onload = fetchImage;
+        window.onload = fetchData;
     </script>
     <script>
         function startNewFlight() {
@@ -60,7 +74,8 @@
 <body>
     <h1>Welcome to the Dashboard</h1>
     <p>This is a protected page, accessible only by authorized users.</p>
-    <img id="numpy-image" src="" alt="NumPy Image">
+    <img id="image" src="" alt="Drone Image">
+     <div id="results"></div>
     <button onclick="startNewFlight()">Start New Flight</button>
     <button onclick="stopCurrentFlight()">Stop Current Flight</button>
     <div id="flight-info"></div>

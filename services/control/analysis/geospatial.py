@@ -52,6 +52,7 @@ class GEOSpatial:
         self.elevation_cache[(latitude_key, longitude_key)] = elevation_value
 
         return elevation_value
+
     def detection_angles(self, target_location, image_size, fov_horizontal, fov_vertical):
         x, y = target_location
         width, height = image_size
@@ -60,7 +61,7 @@ class GEOSpatial:
 
         return theta_x, theta_y
 
-    def find_center(x1, y1, x2, y2):
+    def find_center(self, x1, y1, x2, y2):
         center_x = (x1 + x2) // 2
         center_y = (y1 + y2) // 2
 

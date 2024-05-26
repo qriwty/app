@@ -8,9 +8,12 @@ from .geospatial import GEOSpatial
 
 
 class DroneAnalysisService:
-    def __init__(self, yolov8_model_path, geospatial_file_path):
-        self.model = YOLO(yolov8_model_path)
-        self.detection_threshold = 0.3
+    def __init__(self, model_path, dem_path, classes=None, detection_threshold=0.3, iou_threshold=0.5, max_detections=10):
+        self.model = YOLO(model_path)
+        self.detection_threshold = detection_threshold
+        self.iou_threshold = iou_threshold
+        self.max_detections = max_detections
+        self.classes = classes
 
         resnet = ResNetConfiguration(
             base="resnet18",
@@ -24,18 +27,16 @@ class DroneAnalysisService:
             max_cosine_distance=0.7
         )
 
-        self.geospatial = GEOSpatial(geospatial_file_path)
+        self.geospatial = GEOSpatial(dem_path)
 
-    def process_frame(self, camera_frame, image_width, image_height, fov_horizontal):
-        fov_vertical = 2 * math.atan(math.tan(fov_horizontal / 2) * (image_height / image_width))
-
+    def predict(self, frame):
         result = self.model.predict(
-            source=camera_frame,
-            imgsz=camera_frame.shape[:2],
-            classes=None,
+            source=frame,
+            imgsz=frame.shape[:2],
+            classes=self.classes,
             conf=self.detection_threshold,
-            iou=0.5,
-            max_det=10,
+            iou=self.iou_threshold,
+            max_det=self.max_detections,
             augment=False,
             agnostic_nms=True,
             device="cpu",
@@ -50,14 +51,14 @@ class DroneAnalysisService:
             class_id = int(class_id)
             detections.append([x1, y1, x2, y2, score, class_id])
 
-        self.tracker.update(camera_frame, detections)
+        return detections
 
-        return detections, fov_vertical
+    def update_tracker(self, frame, detections):
+        self.tracker.update(frame, detections)
 
-    def analyze(self, camera_frame, image_width, image_height, fov_horizontal, gimbal_data, attitude_data,
-                global_position_data):
-        detections, fov_vertical = self.process_frame(camera_frame, image_width, image_height, fov_horizontal)
+        return self.tracker.tracks
 
+    def geospatial_analysis(self, tracks, image_width, image_height, fov_horizontal, fov_vertical, gimbal_data, attitude_data, global_position_data):
         gimbal_roll, gimbal_pitch, gimbal_yaw = gimbal_data.quaternion.to_euler()
         drone_roll = math.radians(attitude_data.roll)
         drone_pitch = math.radians(attitude_data.pitch)
@@ -67,11 +68,10 @@ class DroneAnalysisService:
         view_pitch = gimbal_pitch + drone_pitch
         view_yaw = gimbal_yaw + drone_heading
 
-        target_locations = []
-        for track in self.tracker.tracks:
+        tracks_locations = {}
+        for track in tracks:
             x1, y1, x2, y2 = track.to_tlbr()
             track_id = track.track_id
-            class_id = track.class_id
 
             detection_offset = self.geospatial.detection_angles(
                 self.geospatial.find_center(x1, y1, x2, y2),
@@ -88,36 +88,6 @@ class DroneAnalysisService:
                 direction_vector
             )
 
-            target_locations.append({
-                "track_id": track_id,
-                "class_id": class_id,
-                "location": target_location
-            })
+            tracks_locations[track_id] = target_location
 
-        return target_locations
-
-
-yolov8_model_path = "yolov8n-visdrone.pt"
-geospatial_file_path = "S36E149.hgt"
-
-if __name__ == "__main__":
-    analysis_service = DroneAnalysisService(yolov8_model_path, geospatial_file_path)
-
-    camera_frame = ...
-    image_width = ...
-    image_height = ...
-    fov_horizontal = ...
-    gimbal_data = ...
-    attitude_data = ...
-    global_position_data = ...
-
-    target_locations = analysis_service.analyze(
-        camera_frame,
-        image_width,
-        image_height,
-        fov_horizontal,
-        gimbal_data,
-        attitude_data,
-        global_position_data
-    )
-    print("Target Locations:", target_locations)
+        return tracks_locations

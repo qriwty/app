@@ -1,10 +1,10 @@
+import base64
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, session
-from app import db
-from models import Flight
+from app import db, core_service
+from models import Flight, Image, Detection, Point, Setting
 from utils.jwt import token_required
-from utils.helpers import convert_image_to_base64, create_blank_image, flight_active_required
-from functools import wraps
+from utils.helpers import flight_active_required
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -26,6 +26,23 @@ def start_flight(user_id):
     db.session.commit()
 
     session['flight_id'] = new_flight.id
+
+    default_settings = [
+        {'parameter': 'confidence', 'value': '0.5'},
+        {'parameter': 'jaccard_index', 'value': '0.5'},
+        {'parameter': 'detection_limit', 'value': '100'},
+        {'parameter': 'exclude_classes', 'value': '-1'}
+    ]
+
+    for setting in default_settings:
+        new_setting = Setting(
+            flight_id=new_flight.id,
+            parameter=setting['parameter'],
+            value=setting['value']
+        )
+        db.session.add(new_setting)
+
+    db.session.commit()
 
     return jsonify({'flight_id': new_flight.id})
 
@@ -49,11 +66,31 @@ def stop_flight(user_id):
     return jsonify({'message': 'Flight stopped successfully'})
 
 
-@dashboard_bp.route('/image')
+@dashboard_bp.route('/get-analysis', methods=['GET'])
 @token_required
 @flight_active_required
-def dashboard_image(user_id):
-    image = create_blank_image(640, 480)
-    converted_image = convert_image_to_base64(image)
+def get_analysis(user_id):
+    flight_id = session.get('flight_id')
 
-    return jsonify({'image_data': converted_image})
+    core_service.run_analysis(flight_id)
+
+    latest_image_record = db.session.query(Image).filter_by(flight_id=flight_id).order_by(
+        Image.timestamp.desc()).first()
+    if not latest_image_record:
+        return jsonify({'message': 'No image data available'}), 400
+
+    latest_image = base64.b64encode(latest_image_record.image).decode('utf-8')
+
+    detections = db.session.query(Detection).filter_by(image_id=latest_image_record.id).all()
+    results = []
+    for detection in detections:
+        point = db.session.query(Point).filter_by(id=detection.point_id).first()
+        if point:
+            results.append({
+                'track_id': detection.object_id,
+                'class_id': detection.class_name,
+                'location': (point.latitude, point.longitude, point.altitude)
+            })
+
+    return jsonify({'image_data': latest_image, 'detections': results})
+
