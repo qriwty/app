@@ -1,6 +1,8 @@
 import math
 import threading
 
+from sqlalchemy import desc
+
 from .communication.communicator import DroneDataService
 from .analysis.analysist import DroneAnalysisService
 
@@ -24,6 +26,82 @@ class DroneCoreService:
         )
 
         self.latest = None
+
+    def execute_command(self, command):
+        command_parts = command.split()
+
+        command_target = command_parts[0]
+        command_name = command_parts[1]
+        command_module = command_parts[2]
+        command_args = command_parts[3:]
+
+        if command_target == "GIMBAL":
+            if command_name == "SET_ANGLES":
+                roll, pitch, yaw = map(float, command_args)
+
+                self.data_service.mavlink_connection.gimbal.set_angles(
+                    roll, pitch, yaw
+                )
+
+                return roll, pitch, yaw
+
+            elif command_name == "SET_ROI":
+                if command_module == "ANALYSIS":
+                    object_id = command_args
+                    latest_detection = db.session.query(Detection) \
+                        .filter_by(object_id=object_id) \
+                        .order_by(desc(Detection.created)) \
+                        .first()
+
+                    if not latest_detection:
+                        return None
+
+                    point = db.session.query(Point).get(latest_detection.point_id)
+
+                    if not point:
+                        return None
+
+                    self.data_service.mavlink_connection.gimbal.set_roi_location(
+                        point.latitude,
+                        point.longitude,
+                        point.altitude
+                    )
+
+                    return point
+
+                latitude, longitude, altitude = map(float, command_args)
+
+                self.data_service.mavlink_connection.gimbal.set_roi_location(
+                    latitude, longitude, altitude
+                )
+
+                return latitude, longitude, altitude
+
+            elif command_name == "DISABLE_ROI":
+                self.data_service.mavlink_connection.gimbal.disable_roi()
+
+                return 0
+
+        elif command_target == "DRONE":
+            if command_name == "ARM":
+                # packet = self.data_service.mavlink_connection.encode_command_long(
+                #     400,
+                #     1,
+                #     0, 0, 0, 0, 0, 0, 0
+                # )
+                #
+                # self.data_service.mavlink_connection.send_packet(packet)
+                #
+                # return self.data_service.mavlink_connection.connection.recv_match(
+                #     type='COMMAND_ACK', blocking=True, timeout=3
+                # )
+                pass
+
+            elif command_name == "DISARM":
+                pass
+
+            elif command_name == "TAKEOFF":
+                pass
 
     def update_settings(self, flight_id):
         settings = db.session.query(Setting).filter_by(flight_id=flight_id).all()

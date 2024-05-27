@@ -7,3 +7,6 @@
 [submodule "services/control/idcs"]
 	path = services/control/idcs
 	url = https://github.com/qriwty/idcs
+[submodule "services/simulation"]
+	path = services/simulation
+	url = https://github.com/qriwty/simulation

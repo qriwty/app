@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask import Blueprint, render_template, session, redirect, request, url_for, jsonify
 
-from app import db
+from app import db, core_service
 from models import Task
 from utils.jwt import token_required
 from utils.helpers import flight_active_required
@@ -53,6 +53,23 @@ def update_task(user_id, task_id):
     task = Task.query.get(task_id)
     if task:
         task.status = request.form['status']
+        db.session.commit()
+
+    return redirect(url_for('navigation_bp.navigation'))
+
+
+@navigation_bp.route('/run/<int:task_id>', methods=['POST'])
+@token_required
+@flight_active_required
+def run_task(user_id, task_id):
+    task = Task.query.get(task_id)
+    if task:
+        task.status = 1
+        db.session.commit()
+
+        core_service.execute_command(task.command)
+
+        task.status = 2
         db.session.commit()
 
     return redirect(url_for('navigation_bp.navigation'))
