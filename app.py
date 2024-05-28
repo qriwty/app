@@ -2,9 +2,9 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
+from db import db
 
 
-db = SQLAlchemy()
 migrate = Migrate()
 
 from services.control import core

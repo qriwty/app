@@ -2,7 +2,8 @@ from datetime import datetime
 
 from flask import Blueprint, render_template, session, redirect, request, url_for, jsonify
 
-from app import db, core_service
+from app import core_service
+from db import db
 from models import Task
 from utils.jwt import token_required
 from utils.helpers import flight_active_required

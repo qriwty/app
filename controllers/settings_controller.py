@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
 
-from app import db
+from db import db
 from models import Setting
 from utils.jwt import token_required
 from utils.helpers import flight_active_required

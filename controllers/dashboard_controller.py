@@ -1,8 +1,9 @@
 import base64
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, session
-from app import db, core_service
-from models import Flight, Image, Detection, Point, Setting
+from app import core_service
+from db import db
+from models import Flight, Image, Detection, Point, Setting, FlightSnapshot
 from utils.jwt import token_required
 from utils.helpers import flight_active_required
 
@@ -74,8 +75,12 @@ def get_analysis(user_id):
 
     core_service.run_analysis(flight_id)
 
-    latest_image_record = db.session.query(Image).filter_by(flight_id=flight_id).order_by(
-        Image.timestamp.desc()).first()
+    latest_snapshot = db.session.query(FlightSnapshot).filter_by(flight_id=flight_id).order_by(
+        FlightSnapshot.timestamp.desc()).first()
+    if not latest_snapshot:
+        return jsonify({'message': 'No flight snapshot data available'}), 400
+
+    latest_image_record = db.session.query(Image).filter_by(flight_snapshot_id=latest_snapshot.id).first()
     if not latest_image_record:
         return jsonify({'message': 'No image data available'}), 400
 
@@ -93,4 +98,3 @@ def get_analysis(user_id):
             })
 
     return jsonify({'image_data': latest_image, 'detections': results})
-

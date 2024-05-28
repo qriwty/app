@@ -1,4 +1,4 @@
-from app import db
+from db import db
 
 
 class Flight(db.Model):
@@ -7,5 +7,3 @@ class Flight(db.Model):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=True)
     user = db.relationship('User', backref=db.backref('flights', lazy=True))
-
-

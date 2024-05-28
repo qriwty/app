@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, request, redirect, url_for
 from utils.jwt import token_required
 from models.user import User
-from app import db
+from db import db
 
 
 profile_bp = Blueprint('profile_bp', __name__)

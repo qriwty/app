@@ -1,5 +1,5 @@
 from models.user import User
-from app import db
+from db import db
 from utils.jwt import generate_token
 
 

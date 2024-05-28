@@ -1,9 +1,15 @@
-from app import db
+from db import db
 
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    flight_id = db.Column(db.Integer, db.ForeignKey('flight.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False)
+    flight_snapshot_id = db.Column(db.Integer, db.ForeignKey('flight_snapshot.id'), nullable=False)
     image = db.Column(db.LargeBinary, nullable=False)
-    flight = db.relationship('Flight', backref=db.backref('images', lazy=True))
+
+    width = db.Column(db.Integer, nullable=False)
+    height = db.Column(db.Integer, nullable=False)
+
+    fov_horizontal = db.Column(db.Float, nullable=False)
+    fov_vertical = db.Column(db.Float, nullable=False)
+
+    flight_snapshot = db.relationship('FlightSnapshot', backref=db.backref('images', lazy=True))

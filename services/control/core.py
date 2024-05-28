@@ -8,9 +8,11 @@ from .analysis.analysist import DroneAnalysisService
 
 import cv2
 from datetime import datetime
-from app import db
+from db import db
 from models.setting import Setting
 from models.task import Task
+from models.flight import Flight
+from models.flight_snapshot import FlightSnapshot
 from models.image import Image
 from models.point import Point
 from models.detection import Detection
@@ -131,11 +133,11 @@ class DroneCoreService:
     def get_mavlink_data(self):
         mavlink_data = self.data_service.get_mavlink_data()
 
-        gimbal_data = mavlink_data["gimbal"]
-        attitude_data = mavlink_data["attitude"]
-        global_position_data = mavlink_data["position"]
+        gimbal = mavlink_data["gimbal"]
+        attitude = mavlink_data["attitude"]
+        global_position = mavlink_data["position"]
 
-        return gimbal_data, attitude_data, global_position_data
+        return gimbal, attitude, global_position
 
     def run_analysis(self, flight_id):
         self.update_settings(flight_id)
@@ -143,7 +145,14 @@ class DroneCoreService:
         camera_frame, image_width, image_height, fov_horizontal, fov_vertical = self.get_drone_data()
         gimbal_data, attitude_data, global_position_data = self.get_mavlink_data()
 
-        image_object = self.save_image(flight_id, camera_frame)
+        point = self.save_point(
+            global_position_data.latitude,
+            global_position_data.longitude,
+            global_position_data.altitude
+        )
+        snapshot = self.save_flight_snapshot(flight_id, point.id, attitude_data, gimbal_data)
+
+        image_object = self.save_image(snapshot.id, camera_frame, image_width, image_height, fov_horizontal, fov_vertical)
 
         detections = self.analysis_service.predict(camera_frame)
 
@@ -177,14 +186,36 @@ class DroneCoreService:
 
         self.latest = [image_object]
 
-    def save_image(self, flight_id, image_data):
+    def save_flight_snapshot(self, flight_id, point_id, attitude_data, gimbal_data):
+        roll, pitch, yaw = gimbal_data.quaternion.to_euler()
+        new_snapshot = FlightSnapshot(
+            flight_id=flight_id,
+            timestamp=datetime.now(),
+            point_id=point_id,
+            roll=attitude_data.roll,
+            pitch=attitude_data.pitch,
+            yaw=attitude_data.pitch,
+            gimbal_roll=roll,
+            gimbal_pitch=pitch,
+            gimbal_yaw=pitch
+        )
+
+        db.session.add(new_snapshot)
+        db.session.commit()
+
+        return new_snapshot
+
+    def save_image(self, flight_snapshot_id, image_data, width, height, fov_horizontal, fov_vertical):
         _, compressed_image = cv2.imencode('.jpg', image_data, [cv2.IMWRITE_JPEG_QUALITY, 70])
         image_bytes = compressed_image.tobytes()
 
         new_image = Image(
-            flight_id=flight_id,
-            timestamp=datetime.now(),
-            image=image_bytes
+            flight_snapshot_id=flight_snapshot_id,
+            image=image_bytes,
+            width=width,
+            height=height,
+            fov_horizontal=fov_horizontal,
+            fov_vertical=fov_vertical
         )
 
         db.session.add(new_image)

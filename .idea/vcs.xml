@@ -4,6 +4,5 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/services/control/analysis/deep_sort" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/services/control/communication/mavlink" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/services/control/idcs" vcs="Git" />
   </component>
 </project>
