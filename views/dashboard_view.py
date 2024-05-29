@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, render_template, jsonify, session
 from app import core_service
 from db import db
@@ -87,14 +87,39 @@ def get_analysis(user_id):
     latest_image = base64.b64encode(latest_image_record.image).decode('utf-8')
 
     detections = db.session.query(Detection).filter_by(image_id=latest_image_record.id).all()
-    results = []
+    image_detections = []
     for detection in detections:
         point = db.session.query(Point).filter_by(id=detection.point_id).first()
         if point:
-            results.append({
+            image_detections.append({
                 'track_id': detection.object_id,
                 'class_id': detection.class_name,
                 'location': (point.latitude, point.longitude, point.altitude)
             })
 
-    return jsonify({'image_data': latest_image, 'detections': results})
+    all_snapshots = db.session.query(FlightSnapshot).filter_by(flight_id=flight_id).order_by(
+        FlightSnapshot.timestamp.asc()).all()
+    filtered_snapshots = []
+    last_timestamp = None
+
+    for snapshot in all_snapshots:
+        if last_timestamp is None or (snapshot.timestamp - last_timestamp >= timedelta(minutes=1)):
+            filtered_snapshots.append(snapshot)
+            last_timestamp = snapshot.timestamp
+
+    snapshot_data = []
+    for snapshot in filtered_snapshots:
+        point = db.session.query(Point).filter_by(id=snapshot.point_id).first()
+        if point:
+            snapshot_data.append({
+                'timestamp': snapshot.timestamp,
+                'latitude': point.latitude,
+                'longitude': point.longitude,
+                'altitude': point.altitude
+            })
+
+    return jsonify({
+        'image_data': latest_image,
+        'detections': image_detections,
+        'snapshots': snapshot_data
+    })

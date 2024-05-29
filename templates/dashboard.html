@@ -19,24 +19,30 @@
                         document.getElementById('image').src = 'data:image/png;base64,' + data.image_data;
                     }
                     if (data && data.detections) {
-                        const resultsDiv = document.getElementById('results');
-                        resultsDiv.innerHTML = '';
+                        const detectionsList = document.getElementById('detections-list');
+                        detectionsList.innerHTML = '';
+
                         data.detections.forEach(detection => {
-                            const detectionDiv = document.createElement('div');
-                            detectionDiv.innerHTML = `
-                                <p>Track ID: ${detection.track_id}</p>
-                                <p>Class ID: ${detection.class_id}</p>
-                                <p>Location: Latitude: ${detection.location[0]}, Longitude: ${detection.location[1]}, Altitude: ${detection.location[2]}</p>
-                            `;
-                            resultsDiv.appendChild(detectionDiv);
+                            const li = document.createElement('li');
+                            li.innerHTML = `Track ID: ${detection.track_id}, Class: ${detection.class_id}, Location: (${detection.location[0]}, ${detection.location[1]}, ${detection.location[2]})`;
+                            detectionsList.appendChild(li);
                         });
                     }
+                    if (data && data.snapshots) {
+                        const snapshotsList = document.getElementById('snapshots-list');
+                        snapshotsList.innerHTML = '';
 
+                        data.snapshots.forEach(snapshot => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `Timestamp: ${snapshot.timestamp}, Location: (${snapshot.latitude}, ${snapshot.longitude}, ${snapshot.altitude})`;
+                            snapshotsList.appendChild(li);
+                        });
+                    }
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-        setInterval(fetchData, 1000 / 3);
+        setInterval(fetchData, 1000 / 5);
 
         window.onload = fetchData;
     </script>
@@ -72,13 +78,24 @@
     </script>
 </head>
 <body>
-    <h1>Welcome to the Dashboard</h1>
-    <p>This is a protected page, accessible only by authorized users.</p>
-    <img id="image" src="" alt="Drone Image">
-     <div id="results"></div>
-    <button onclick="startNewFlight()">Start New Flight</button>
-    <button onclick="stopCurrentFlight()">Stop Current Flight</button>
-    <div id="flight-info"></div>
+    <h1>Dashboard</h1>
+    <div>
+        <img id="image" alt="Drone Image" />
+    </div>
+
+    <div id="results">
+        <h2>Detections</h2>
+        <ul id="detections-list"></ul>
+        <h2>Flight Snapshots</h2>
+        <ul id="snapshots-list" style="max-height: 200px; overflow-y: scroll;"></ul>
+    </div>
+
+    <div class="flight_control">
+        <button onclick="startNewFlight()">Start New Flight</button>
+        <button onclick="stopCurrentFlight()">Stop Current Flight</button>
+        <div id="flight-info"></div>
+    </div>
+
     <nav>
         <ul>
             <li><a href="{{ url_for('profile_bp.profile') }}">Profile</a></li>
