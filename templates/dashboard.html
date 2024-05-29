@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script>
-        function fetchData() {
+        function fetchAnalysisData() {
             fetch('/dashboard/get-analysis')
                 .then(response => {
                     if (response.status === 401) {
@@ -15,36 +15,57 @@
                     return response.json();
                 })
                 .then(data => {
-                    if (data && data.image_data) {
-                        document.getElementById('image').src = 'data:image/png;base64,' + data.image_data;
+                    if (data.error) {
+                        console.error('Error fetching analysis:', data.error);
+                        return;
                     }
-                    if (data && data.detections) {
-                        const detectionsList = document.getElementById('detections-list');
-                        detectionsList.innerHTML = '';
+                    document.getElementById('timestamp').textContent = 'Timestamp: ' + data.timestamp;
 
-                        data.detections.forEach(detection => {
-                            const li = document.createElement('li');
-                            li.innerHTML = `Track ID: ${detection.track_id}, Class: ${detection.class_id}, Location: (${detection.location[0]}, ${detection.location[1]}, ${detection.location[2]})`;
-                            detectionsList.appendChild(li);
-                        });
-                    }
-                    if (data && data.snapshots) {
-                        const snapshotsList = document.getElementById('snapshots-list');
-                        snapshotsList.innerHTML = '';
+                    const frameImg = document.getElementById('drone-image');
+                    frameImg.src = 'data:image/jpeg;base64,' + data.image;
 
-                        data.snapshots.forEach(snapshot => {
-                            const li = document.createElement('li');
-                            li.innerHTML = `Timestamp: ${snapshot.timestamp}, Location: (${snapshot.latitude}, ${snapshot.longitude}, ${snapshot.altitude})`;
-                            snapshotsList.appendChild(li);
-                        });
-                    }
+                    const detectionsList = document.getElementById('detections-list');
+                    detectionsList.innerHTML = '';
+
+                    data.tracks.forEach(track => {
+                        const li = document.createElement('li');
+                        li.textContent = `Track ID: ${track.track_id}, Class Name: ${track.class_name}, Latitude: ${track.latitude}, Longitude: ${track.longitude}, Altitude: ${track.altitude}`;
+                        detectionsList.appendChild(li);
+                    });
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-        setInterval(fetchData, 1000 / 5);
+        setInterval(fetchAnalysisData, 1000 / 30);
 
-        window.onload = fetchData;
+        window.onload = fetchAnalysisData;
+    </script>
+    <script>
+        function fetchFlightData() {
+            fetch('/dashboard/get-flight-info')
+                .then(response => {
+                    if (response.status === 401) {
+                        window.location.href = '/auth/login';
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const snapshotsList = document.getElementById('snapshots-list');
+                    snapshotsList.innerHTML = '';
+
+                    data.snapshots.forEach(snapshot => {
+                        const li = document.createElement('li');
+                        li.textContent = `Timestamp: ${snapshot.timestamp}, Latitude: ${snapshot.latitude}, Longitude: ${snapshot.longitude}, Altitude: ${snapshot.altitude}`;
+                        snapshotsList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        setInterval(fetchFlightData, 1000 * 5);
+
+        window.onload = fetchFlightData;
     </script>
     <script>
         function startNewFlight() {
@@ -79,15 +100,17 @@
 </head>
 <body>
     <h1>Dashboard</h1>
-    <div>
-        <img id="image" alt="Drone Image" />
+
+    <div id="analysis_results">
+        <h2 id="timestamp">Timestamp: </h2>
+        <img id="drone-image" alt="Drone Image"/>
+        <h2>Detections</h2>
+        <ul id="detections-list" style="height: 100px; overflow-y: scroll;"></ul>
     </div>
 
-    <div id="results">
-        <h2>Detections</h2>
-        <ul id="detections-list"></ul>
+    <div id="flight_info">
         <h2>Flight Snapshots</h2>
-        <ul id="snapshots-list" style="max-height: 200px; overflow-y: scroll;"></ul>
+        <ul id="snapshots-list" style="height: 100px; overflow-y: scroll;"></ul>
     </div>
 
     <div class="flight_control">

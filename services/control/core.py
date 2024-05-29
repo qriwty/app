@@ -1,22 +1,12 @@
 import math
 import threading
+import random
 
-from sqlalchemy import desc
+import cv2
 
 from .communication.communicator import DroneDataService
 from .analysis.analysist import DroneAnalysisService
-
-import cv2
 from datetime import datetime
-from db import db
-from models.setting import Setting
-from models.task import Task
-from models.flight import Flight
-from models.flight_snapshot import FlightSnapshot
-from models.image import Image
-from models.point import Point
-from models.detection import Detection
-from models.object import Object
 
 
 class DroneCoreService:
@@ -27,7 +17,24 @@ class DroneCoreService:
             dem_path
         )
 
+        self.colors = [(
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255)) for j in range(1000)
+        ]
+
         self.latest = None
+        self.running = False
+
+        self.analysis_thread = threading.Thread(target=self.run_analysis)
+        self.analysis_thread.start()
+        self.start_analysis()
+
+    def start_analysis(self):
+        self.running = True
+
+    def stop_analysis(self):
+        self.running = False
 
     def execute_command(self, command):
         command_parts = command.split()
@@ -47,37 +54,37 @@ class DroneCoreService:
 
                 return roll, pitch, yaw
 
-            elif command_name == "SET_ROI":
-                if command_module == "ANALYSIS":
-                    object_id = command_args
-                    latest_detection = db.session.query(Detection) \
-                        .filter_by(object_id=object_id) \
-                        .order_by(desc(Detection.created)) \
-                        .first()
-
-                    if not latest_detection:
-                        return None
-
-                    point = db.session.query(Point).get(latest_detection.point_id)
-
-                    if not point:
-                        return None
-
-                    self.data_service.mavlink_connection.gimbal.set_roi_location(
-                        point.latitude,
-                        point.longitude,
-                        point.altitude
-                    )
-
-                    return point
-
-                latitude, longitude, altitude = map(float, command_args)
-
-                self.data_service.mavlink_connection.gimbal.set_roi_location(
-                    latitude, longitude, altitude
-                )
-
-                return latitude, longitude, altitude
+            # elif command_name == "SET_ROI":
+                # if command_module == "ANALYSIS":
+                #     object_id = command_args
+                #     latest_detection = db.session.query(Detection) \
+                #         .filter_by(object_id=object_id) \
+                #         .order_by(desc(Detection.created)) \
+                #         .first()
+                #
+                #     if not latest_detection:
+                #         return None
+                #
+                #     point = db.session.query(Point).get(latest_detection.point_id)
+                #
+                #     if not point:
+                #         return None
+                #
+                #     self.data_service.mavlink_connection.gimbal.set_roi_location(
+                #         point.latitude,
+                #         point.longitude,
+                #         point.altitude
+                #     )
+                #
+                #     return point
+                #
+                # latitude, longitude, altitude = map(float, command_args)
+                #
+                # self.data_service.mavlink_connection.gimbal.set_roi_location(
+                #     latitude, longitude, altitude
+                # )
+                #
+                # return latitude, longitude, altitude
 
             elif command_name == "DISABLE_ROI":
                 self.data_service.mavlink_connection.gimbal.disable_roi()
@@ -105,15 +112,7 @@ class DroneCoreService:
             elif command_name == "TAKEOFF":
                 pass
 
-    def update_settings(self, flight_id):
-        settings = db.session.query(Setting).filter_by(flight_id=flight_id).all()
-        settings_dict = {setting.parameter: setting.value for setting in settings}
-
-        detection_threshold = float(settings_dict.get('confidence', 0.5))
-        iou_threshold = float(settings_dict.get('jaccard_index', 0.5))
-        max_detections = int(settings_dict.get('detection_limit', 100))
-        classes_excluded = list(map(int, settings_dict.get('exclude_classes', '-1').split(',')))
-
+    def update_settings(self, detection_threshold, iou_threshold, max_detections, classes_excluded):
         self.analysis_service.detection_threshold = detection_threshold
         self.analysis_service.iou_threshold = iou_threshold
         self.analysis_service.max_detections = max_detections
@@ -139,125 +138,121 @@ class DroneCoreService:
 
         return gimbal, attitude, global_position
 
-    def run_analysis(self, flight_id):
-        self.update_settings(flight_id)
+    def paint_info(self, image, frame, track_id):
+        color = self.colors[track_id % len(self.colors)]
 
-        camera_frame, image_width, image_height, fov_horizontal, fov_vertical = self.get_drone_data()
-        gimbal_data, attitude_data, global_position_data = self.get_mavlink_data()
-
-        point = self.save_point(
-            global_position_data.latitude,
-            global_position_data.longitude,
-            global_position_data.altitude
-        )
-        snapshot = self.save_flight_snapshot(flight_id, point.id, attitude_data, gimbal_data)
-
-        image_object = self.save_image(snapshot.id, camera_frame, image_width, image_height, fov_horizontal, fov_vertical)
-
-        detections = self.analysis_service.predict(camera_frame)
-
-        tracks = self.analysis_service.update_tracker(camera_frame, detections)
-
-        tracks_locations = self.analysis_service.geospatial_analysis(
-            tracks,
-            image_width, image_height,
-            fov_horizontal, fov_vertical,
-            gimbal_data, attitude_data, global_position_data
+        x1, y1, x2, y2 = frame
+        cv2.rectangle(
+            image,
+            (x1, y1),
+            (x2, y2),
+            color,
+            2
         )
 
-        for track in tracks:
-            x1, y1, x2, y2 = track.to_tlbr()
-            track_id = track.track_id
-            class_id = track.class_id
+        cx = int((x1 + x2) / 2)
+        cy = int((y1 + y2) / 2)
 
-            location = tracks_locations[track_id]
+        cv2.circle(
+            image,
+            (cx, cy),
+            3,
+            color,
+            -1
+        )
 
-            track_object = self.save_object(track_id)
+        cv2.putText(
+            image,
+            f"ID: {track_id}",
+            (cx + 10, cy),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 0, 255),
+            1
+        )
 
-            point = self.save_point(*location)
+        return image
 
-            detection = self.save_detection(
-                point.id,
-                image_object.id,
-                track_id,
-                class_id,
-                f"{[int(value) for value in (x1, y1, x2, y2)]}"
+    def run_analysis(self):
+        self.running = True
+        while self.running:
+            camera_frame, image_width, image_height, fov_horizontal, fov_vertical = self.get_drone_data()
+            gimbal_data, attitude_data, global_position_data = self.get_mavlink_data()
+
+            gimbal_roll, gimbal_pitch, gimbal_yaw = gimbal_data.quaternion.to_euler()
+            analysis_result = {
+                "timestamp": datetime.now(),
+                "drone": {
+                    "location": {
+                        "latitude": global_position_data.latitude,
+                        "longitude": global_position_data.longitude,
+                        "altitude": global_position_data.altitude
+                    },
+                    "attitude": {
+                        "roll": attitude_data.roll,
+                        "pitch": attitude_data.pitch,
+                        "yaw": attitude_data.yaw
+                    },
+                    "camera": {
+                        "frame": camera_frame,
+                        "width": image_width,
+                        "height": image_height,
+                        "fov_horizontal": fov_horizontal,
+                        "fov_vertical": fov_vertical
+                    },
+                    "gimbal": {
+                        "roll": gimbal_roll,
+                        "pitch": gimbal_pitch,
+                        "yaw": gimbal_yaw
+                    }
+                },
+                "analysis": {
+                    "tracks": [],
+                    "frame": None
+                }
+            }
+
+            detections = self.analysis_service.predict(camera_frame)
+
+            tracks = self.analysis_service.update_tracker(camera_frame, detections)
+
+            tracks_locations = self.analysis_service.geospatial_analysis(
+                tracks,
+                image_width, image_height,
+                fov_horizontal, fov_vertical,
+                gimbal_data, attitude_data, global_position_data
             )
 
-        self.latest = [image_object]
+            for track in tracks:
+                x1, y1, x2, y2 = map(int, track.to_tlbr())
+                track_id = track.track_id
+                class_id = track.class_id
 
-    def save_flight_snapshot(self, flight_id, point_id, attitude_data, gimbal_data):
-        roll, pitch, yaw = gimbal_data.quaternion.to_euler()
-        new_snapshot = FlightSnapshot(
-            flight_id=flight_id,
-            timestamp=datetime.now(),
-            point_id=point_id,
-            roll=attitude_data.roll,
-            pitch=attitude_data.pitch,
-            yaw=attitude_data.pitch,
-            gimbal_roll=roll,
-            gimbal_pitch=pitch,
-            gimbal_yaw=pitch
-        )
+                track_latitude, track_longitude, track_altitude = tracks_locations[track_id]
 
-        db.session.add(new_snapshot)
-        db.session.commit()
+                track_results = {
+                    "track_id": track_id,
+                    "class_id": class_id,
+                    "location": {
+                        "latitude": track_latitude,
+                        "longitude": track_longitude,
+                        "altitude": track_altitude
+                    },
+                    "frame": {
+                        "x1": x1,
+                        "y1": y1,
+                        "x2": x2,
+                        "y2": y2
+                    }
+                }
 
-        return new_snapshot
+                analysis_result["analysis"]["tracks"].append(track_results)
 
-    def save_image(self, flight_snapshot_id, image_data, width, height, fov_horizontal, fov_vertical):
-        _, compressed_image = cv2.imencode('.jpg', image_data, [cv2.IMWRITE_JPEG_QUALITY, 70])
-        image_bytes = compressed_image.tobytes()
+                self.paint_info(camera_frame, [x1, y1, x2, y2], track_id)
 
-        new_image = Image(
-            flight_snapshot_id=flight_snapshot_id,
-            image=image_bytes,
-            width=width,
-            height=height,
-            fov_horizontal=fov_horizontal,
-            fov_vertical=fov_vertical
-        )
+            analysis_result["analysis"]["frame"] = camera_frame
 
-        db.session.add(new_image)
-        db.session.commit()
+            self.latest = analysis_result
 
-        return new_image
-
-    def save_detection(self, point_id, image_id, object_id, class_name, frame):
-        new_detection = Detection(
-            point_id=point_id,
-            image_id=image_id,
-            object_id=object_id,
-            class_name=class_name,
-            frame=frame
-        )
-
-        db.session.add(new_detection)
-        db.session.commit()
-
-        return new_detection
-
-    def save_point(self, latitude, longitude, altitude):
-        new_point = Point(
-            latitude=latitude,
-            longitude=longitude,
-            altitude=altitude
-        )
-
-        db.session.add(new_point)
-        db.session.commit()
-
-        return new_point
-
-    def save_object(self, object_id):
-        existing_object = Object.query.get(object_id)
-
-        if existing_object:
-            return existing_object
-
-        new_object = Object(id=object_id)
-
-        db.session.add(new_object)
-        db.session.commit()
-
-        return new_object
+    def get_analysis(self):
+        return self.latest

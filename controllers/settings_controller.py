@@ -4,6 +4,7 @@ from db import db
 from models import Setting
 from utils.jwt import token_required
 from utils.helpers import flight_active_required
+from app import core_service
 
 settings_bp = Blueprint('settings_bp', __name__)
 
@@ -44,5 +45,19 @@ def update(user_id):
             db.session.add(new_setting)
 
     db.session.commit()
+
+    settings_dict = {setting['parameter']: setting['value'] for setting in settings}
+
+    detection_threshold = float(settings_dict.get('confidence', 0.5))
+    iou_threshold = float(settings_dict.get('jaccard_index', 0.5))
+    max_detections = int(settings_dict.get('detection_limit', 100))
+    classes_excluded = list(map(int, settings_dict.get('exclude_classes', '-1').split(',')))
+
+    core_service.update_settings(
+        detection_threshold=detection_threshold,
+        iou_threshold=iou_threshold,
+        max_detections=max_detections,
+        classes_excluded=classes_excluded
+    )
 
     return redirect(url_for('dashboard.dashboard'))

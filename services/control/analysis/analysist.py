@@ -8,7 +8,7 @@ from .geospatial import GEOSpatial
 
 
 class DroneAnalysisService:
-    def __init__(self, model_path, dem_path, classes=None, detection_threshold=0.3, iou_threshold=0.5, max_detections=10):
+    def __init__(self, model_path, dem_path, classes=None, detection_threshold=0.25, iou_threshold=0.5, max_detections=10):
         self.model = YOLO(model_path)
         self.detection_threshold = detection_threshold
         self.iou_threshold = iou_threshold
