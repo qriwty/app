@@ -5,23 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="21a260c9-9232-48b7-a679-f1676e081787" name="Changes" comment="Update">
-      <change afterPath="$PROJECT_DIR$/services/simulation" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/navigation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/navigation_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/auth_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/auth_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/dashboard_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/dashboard_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/navigation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/navigation_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/profile_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/profile_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/settings_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/views/settings_view.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/README" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/alembic.ini" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/script.py.mako" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/df9892f2f6f8_initial_migration.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/control/communication/mavlink/mavlink/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/control/communication/mavlink/mavlink/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/control/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/control/core.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/control/idcs" beforeDir="false" afterPath="$PROJECT_DIR$/services/control/idcs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/control/idcs/deepsort_demo.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/services/control/idcs/deepsort_demo.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/control/idcs/main.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/services/control/idcs/main.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/control/idcs/yolo_demo.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/services/control/idcs/yolo_demo.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/navigation.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/navigation.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +167,7 @@
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
       <option name="SDK_NAME" value="Poetry (app)" />
-      <option name="WORKING_DIRECTORY" value="C:\Users\Archy\Desktop\STUDY\diploma\app" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -214,6 +210,11 @@
       <workItem from="1716585178491" duration="67000" />
       <workItem from="1716669098743" duration="18750000" />
       <workItem from="1716761921361" duration="5695000" />
+      <workItem from="1716770326811" duration="135000" />
+      <workItem from="1716820033166" duration="7345000" />
+      <workItem from="1716860030997" duration="2442000" />
+      <workItem from="1716863308763" duration="108000" />
+      <workItem from="1716930687899" duration="3073000" />
     </task>
     <task id="LOCAL-00001" summary="Poetry update">
       <option name="closed" value="true" />
@@ -255,7 +256,39 @@
       <option name="project" value="LOCAL" />
       <updated>1716694043077</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Update">
+      <option name="closed" value="true" />
+      <created>1716770410497</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1716770410498</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Update">
+      <option name="closed" value="true" />
+      <created>1716852412499</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1716852412499</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Update">
+      <option name="closed" value="true" />
+      <created>1716852422744</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1716852422744</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Update">
+      <option name="closed" value="true" />
+      <created>1716863376784</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1716863376784</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -291,9 +324,20 @@
     <MESSAGE value="Update" />
     <option name="LAST_COMMIT_MESSAGE" value="Update" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/services/control/core.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/app$test.coverage" NAME="test Coverage Results" MODIFIED="1712514550164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/app$app.coverage" NAME="app Coverage Results" MODIFIED="1716770148471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\Archy\Desktop\STUDY\diploma\app" />
+    <SUITE FILE_PATH="coverage/app$app.coverage" NAME="app Coverage Results" MODIFIED="1716932829392" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/app$core.coverage" NAME="core Coverage Results" MODIFIED="1716687138630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/services/control" />
   </component>
 </project>

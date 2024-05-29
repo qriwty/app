@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session
 from services.auth.auth_service import AuthService
 
+
 auth_bp = Blueprint('auth', __name__)
 auth_service = AuthService()
 

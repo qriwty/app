@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
 from db import db
@@ -25,11 +24,11 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from controllers.auth_controller import auth_bp
-    from controllers.dashboard_controller import dashboard_bp
-    from controllers.navigation_controller import navigation_bp
-    from controllers.profile_controller import profile_bp
-    from controllers.settings_controller import settings_bp
+    from views.auth_view import auth_bp
+    from views.dashboard_view import dashboard_bp
+    from views.navigation_view import navigation_bp
+    from views.profile_view import profile_bp
+    from views.settings_view import settings_bp
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
