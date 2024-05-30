@@ -167,7 +167,7 @@ def store_analysis(flight_id, analysis):
     )
 
     camera = analysis["drone"]["camera"]
-    _, compressed_image = cv2.imencode('.jpg', camera["frame"], [cv2.IMWRITE_JPEG_QUALITY, 70])
+    _, compressed_image = cv2.imencode('.jpg', camera["frame"], [cv2.IMWRITE_JPEG_QUALITY, 80])
     image_bytes = compressed_image.tobytes()
     image = save_image(
         flight_snapshot_id=drone_snapshot.id,
