@@ -36,81 +36,46 @@ class DroneCoreService:
     def stop_analysis(self):
         self.running = False
 
-    def execute_command(self, command):
-        command_parts = command.split()
+    def execute_command(self, command_dictionary):
+        command = command_dictionary["COMMAND"]
+        arguments = command_dictionary["ARGUMENTS"]
+        if command == "ARM":
+            pass
 
-        command_target = command_parts[0]
-        command_name = command_parts[1]
-        command_module = command_parts[2]
-        command_args = command_parts[3:]
+        elif command == "DISARM":
+            pass
 
-        if command_target == "GIMBAL":
-            if command_name == "SET_ANGLES":
-                roll, pitch, yaw = map(float, command_args)
+        elif command == "TAKEOFF":
+            pass
 
-                self.data_service.mavlink_connection.gimbal.set_angles(
-                    roll, pitch, yaw
-                )
+        elif command == "LAND":
+            pass
 
-                return roll, pitch, yaw
+        elif command == "POINT_CAMERA":
+            self.data_service.mavlink_connection.gimbal.set_angles(
+                float(arguments["ROLL"]),
+                float(arguments["PITCH"]),
+                float(arguments["YAW"])
+            )
 
-            # elif command_name == "SET_ROI":
-                # if command_module == "ANALYSIS":
-                #     object_id = command_args
-                #     latest_detection = db.session.query(Detection) \
-                #         .filter_by(object_id=object_id) \
-                #         .order_by(desc(Detection.created)) \
-                #         .first()
-                #
-                #     if not latest_detection:
-                #         return None
-                #
-                #     point = db.session.query(Point).get(latest_detection.point_id)
-                #
-                #     if not point:
-                #         return None
-                #
-                #     self.data_service.mavlink_connection.gimbal.set_roi_location(
-                #         point.latitude,
-                #         point.longitude,
-                #         point.altitude
-                #     )
-                #
-                #     return point
-                #
-                # latitude, longitude, altitude = map(float, command_args)
-                #
-                # self.data_service.mavlink_connection.gimbal.set_roi_location(
-                #     latitude, longitude, altitude
-                # )
-                #
-                # return latitude, longitude, altitude
+        elif command == "SET_ROI":
+            self.data_service.mavlink_connection.gimbal.set_roi_location(
+                float(arguments["LATITUDE"]),
+                float(arguments["LONGITUDE"]),
+                float(arguments["ALTITUDE"])
+            )
 
-            elif command_name == "DISABLE_ROI":
-                self.data_service.mavlink_connection.gimbal.disable_roi()
+        elif command == "DISABLE_ROI":
+            self.data_service.mavlink_connection.gimbal.disable_roi()
 
-                return 0
+        elif command == "GO_TO":
+            pass
 
-        elif command_target == "DRONE":
-            if command_name == "ARM":
-                # packet = self.data_service.mavlink_connection.encode_command_long(
-                #     400,
-                #     1,
-                #     0, 0, 0, 0, 0, 0, 0
-                # )
-                #
-                # self.data_service.mavlink_connection.send_packet(packet)
-                #
-                # return self.data_service.mavlink_connection.connection.recv_match(
-                #     type='COMMAND_ACK', blocking=True, timeout=3
-                # )
-                pass
+        elif command == "CIRCLE_AROUND":
+            pass
 
-            elif command_name == "DISARM":
-                pass
-
-            elif command_name == "TAKEOFF":
-                pass
+        elif command == "POINT_DRONE":
+            pass
 
     def update_settings(self, detection_threshold, iou_threshold, max_detections, classes_excluded):
         self.analysis_service.detection_threshold = detection_threshold

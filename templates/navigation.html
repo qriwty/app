@@ -52,6 +52,86 @@
                 .catch(error => console.error('Error running task:', error));
         }
 
+        function updateCommandInputs() {
+            const command = document.getElementById('command').value;
+            const commandArgs = document.getElementById('command-args');
+            commandArgs.innerHTML = '';
+
+            let args = '';
+            switch (command) {
+                case 'TAKEOFF':
+                    args = `<label for="height">Height:</label>
+                            <input type="number" id="height" name="height" required>`;
+                    break;
+                case 'POINT_CAMERA':
+                    args = `<label for="roll">Roll:</label>
+                            <input type="number" id="roll" name="roll" required>
+                            <label for="pitch">Pitch:</label>
+                            <input type="number" id="pitch" name="pitch" required>
+                            <label for="yaw">Yaw:</label>
+                            <input type="number" id="yaw" name="yaw" required>`;
+                    break;
+                case 'SET_CAMERA_ROI_OBJECT':
+                    args = `<label for="object_id">Object ID:</label>
+                            <input type="number" id="object_id" name="object_id" required>`;
+                    break;
+                case 'SET_CAMERA_ROI_LOCATION':
+                    args = `<label for="lat">Latitude:</label>
+                            <input type="number" step="any" id="lat" name="lat" required>
+                            <label for="lon">Longitude:</label>
+                            <input type="number" step="any" id="lon" name="lon" required>
+                            <label for="alt">Altitude:</label>
+                            <input type="number" id="alt" name="alt" required>`;
+                    break;
+                case 'GO_TO_LOCATION':
+                    args = `<label for="lat">Latitude:</label>
+                            <input type="number" step="any" id="lat" name="lat" required>
+                            <label for="lon">Longitude:</label>
+                            <input type="number" step="any" id="lon" name="lon" required>
+                            <label for="alt">Altitude:</label>
+                            <input type="number" id="alt" name="alt" required>`;
+                    break;
+                case 'GO_TO_OBJECT':
+                    args = `<label for="object_id">Object ID:</label>
+                            <input type="number" id="object_id" name="object_id" required>
+                            <label for="height">Height:</label>
+                            <input type="number" id="height" name="height" required>
+                            <label for="distance">Distance:</label>
+                            <input type="number" id="distance" name="distance" required>`;
+                    break;
+                case 'CIRCLE_AROUND_OBJECT':
+                    args = `<label for="object_id">Object ID:</label>
+                            <input type="number" id="object_id" name="object_id" required>
+                            <label for="height">Height:</label>
+                            <input type="number" id="height" name="height" required>
+                            <label for="distance">Distance:</label>
+                            <input type="number" id="distance" name="distance" required>`;
+                    break;
+                case 'CIRCLE_AROUND_LOCATION':
+                    args = `<label for="lat">Latitude:</label>
+                            <input type="number" step="any" id="lat" name="lat" required>
+                            <label for="lon">Longitude:</label>
+                            <input type="number" step="any" id="lon" name="lon" required>
+                            <label for="alt">Altitude:</label>
+                            <input type="number" id="alt" name="alt" required>
+                            <label for="distance">Distance:</label>
+                            <input type="number" id="distance" name="distance" required>`;
+                    break;
+                case 'POINT_DRONE_DIRECTION':
+                    args = `<label for="direction">Direction (Degrees):</label>
+                            <input type="number" id="direction" name="direction" required>`;
+                    break;
+                case 'POINT_DRONE_OBJECT':
+                    args = `<label for="object_id">Object ID:</label>
+                            <input type="number" id="object_id" name="object_id" required>`;
+                    break;
+                default:
+                    args = '';
+            }
+
+            commandArgs.innerHTML = args;
+        }
+
     </script>
 </head>
 <body>
@@ -59,8 +139,24 @@
     <form method="POST" action="{{ url_for('navigation_bp.add_task') }}">
         <div>
             <label for="command">Command:</label>
-            <input type="text" id="command" name="command" required>
+            <select id="command" name="command" onchange="updateCommandInputs()" required>
+                <option value="ARM">ARM</option>
+                <option value="DISARM">DISARM</option>
+                <option value="TAKEOFF">TAKEOFF</option>
+                <option value="LAND">LAND</option>
+                <option value="POINT_CAMERA">POINT_CAMERA</option>
+                <option value="SET_CAMERA_ROI_OBJECT">SET_CAMERA_ROI_OBJECT</option>
+                <option value="SET_CAMERA_ROI_LOCATION">SET_CAMERA_ROI_LOCATION</option>
+                <option value="DISABLE_ROI">DISABLE_ROI</option>
+                <option value="GO_TO_LOCATION">GO_TO</option>
+                <option value="GO_TO_OBJECT">GO_TO_OBJECT</option>
+                <option value="CIRCLE_AROUND_OBJECT">CIRCLE_AROUND_OBJECT</option>
+                <option value="CIRCLE_AROUND_LOCATION">CIRCLE_AROUND_LOCATION</option>
+                <option value="POINT_DRONE_DIRECTION">POINT_DRONE_DIRECTION</option>
+                <option value="POINT_DRONE_OBJECT">POINT_DRONE_OBJECT</option>
+            </select>
         </div>
+        <div id="command-args"></div>
         <button type="submit">Add Task</button>
     </form>
 
