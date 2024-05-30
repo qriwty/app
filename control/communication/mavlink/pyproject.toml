@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "mavlink"
+version = "0.1.0"
+description = ""
+authors = ["qriwty <arthur.social.rech@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pymavlink = "^2.4.41"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

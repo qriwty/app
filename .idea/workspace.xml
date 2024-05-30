@@ -5,13 +5,65 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="21a260c9-9232-48b7-a679-f1676e081787" name="Changes" comment="Update">
-      <change beforePath="$PROJECT_DIR$/controllers/dashboard_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/dashboard_controller.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Archy.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/data/running.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/deep/configuration.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/deep/extractor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/deep/feature_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/deep/weights/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/deep/weights/resnet18_weights.pth" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/detection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/iou_matching.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/kalman_filter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/linear_assignment.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/linear_assignment_.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/nn_matching.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/preprocessing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/track.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/sort/tracker.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/tracker.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/analysis/deep_sort/demo.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.idea/mavlink.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/mavlink/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/mavlink/control/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/mavlink/data/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/mavlink/processor/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control/communication/mavlink/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/README" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/alembic.ini" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/script.py.mako" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/migrations/versions/df9892f2f6f8_initial_migration.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/analysis/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/analysis/S36E149.hgt" beforeDir="false" afterPath="$PROJECT_DIR$/control/analysis/S36E149.hgt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/analysis/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/analysis/analysist.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/analysis/analysist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/analysis/deep_sort" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/analysis/geospatial.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/analysis/geospatial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/analysis/yolov8n-visdrone.pt" beforeDir="false" afterPath="$PROJECT_DIR$/control/analysis/yolov8n-visdrone.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/communication/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/analysis/deep_sort/deep_sort/deep/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/communication/communicator.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/communication/communicator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/communication/data_stream.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/communication/data_stream.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/communication/drone_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/communication/drone_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/communication/mavlink" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/control/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/control/core.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +75,17 @@
       <list>
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -60,6 +123,7 @@
     "Python.test.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/Archy/Desktop/STUDY/diploma/app/services/control/analysis",
     "node.js.detected.package.eslint": "true",
@@ -67,7 +131,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -301,7 +365,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717027074027</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Update">
+      <option name="closed" value="true" />
+      <created>1717027411342</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1717027411342</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -339,7 +411,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/app$test.coverage" NAME="test Coverage Results" MODIFIED="1712514550164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/app$app.coverage" NAME="app Coverage Results" MODIFIED="1717027350557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/app$app.coverage" NAME="app Coverage Results" MODIFIED="1717028097369" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/app$core.coverage" NAME="core Coverage Results" MODIFIED="1716687138630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/services/control" />
   </component>
 </project>
